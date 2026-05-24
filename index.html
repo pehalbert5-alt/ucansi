@@ -277,6 +277,11 @@
     </nav>
 
     <script>
+        // Enregistrement du Service Worker pour l'installation sur Android
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('sw.js');
+        }
+
         // Intersection Observer pour Play/Pause
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
