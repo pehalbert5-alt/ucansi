@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Ucansi</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Roboto, sans-serif; }
+        body, html { height: 100%; background: black; color: white; overflow: hidden; }
+
+        /* Conteneur principal */
+        .video-container { position: relative; width: 100%; height: 100vh; }
+
+        /* Simulation de la vidéo */
+        .video-bg { width: 100%; height: 100%; object-fit: cover; background: linear-gradient(to bottom, #1a1a1a, #000); }
+
+        /* Header Logo */
+        .header { position: absolute; top: 40px; width: 100%; text-align: center; z-index: 10; }
+        .logo { font-size: 28px; font-weight: 800; letter-spacing: 3px; text-shadow: 0 2px 10px rgba(0,0,0,0.5); }
+        .logo span:first-child { color: #2E5BFF; } /* Bleu */
+        .logo span:last-child { color: #FF4D6D; } /* Rose/Rouge */
+
+        /* Boutons de droite (Like, Comment, Share) */
+        .side-bar { position: absolute; right: 15px; bottom: 140px; display: flex; flex-direction: column; gap: 20px; align-items: center; z-index: 20; }
+        .action-btn { display: flex; flex-direction: column; align-items: center; font-size: 12px; font-weight: 600; text-shadow: 0 1px 5px rgba(0,0,0,0.8); }
+        .icon-circle {
+            width: 50px; height: 50px; border-radius: 50%;
+            background: linear-gradient(135deg, #2E5BFF, #FF4D6D);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 22px; margin-bottom: 5px; box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+            border: 2px solid rgba(255,255,255,0.2);
+        }
+
+        /* Avatar avec bouton + */
+        .profile-container { position: relative; margin-top: 10px; }
+        .avatar { width: 50px; height: 50px; border-radius: 50%; border: 2px solid white; object-fit: cover; }
+        .plus-btn {
+            position: absolute; bottom: -5px; left: 50%; transform: translateX(-50%);
+            background: #FF4D6D; border-radius: 50%; width: 20px; height: 20px;
+            display: flex; align-items: center; justify-content: center; font-size: 14px;
+            border: 2px solid black; font-weight: bold;
+        }
+
+        /* Description en bas à gauche */
+        .bottom-info { position: absolute; left: 15px; bottom: 110px; max-width: 75%; z-index: 20; text-shadow: 0 1px 5px rgba(0,0,0,0.8); }
+        .username { font-weight: bold; font-size: 18px; margin-bottom: 8px; display: flex; align-items: center; gap: 5px; }
+        .username::after { content: '\f058'; font-family: 'Font Awesome 5 Free'; font-weight: 900; color: #2E5BFF; font-size: 14px; }
+        .description { font-size: 15px; line-height: 1.4; font-weight: 400; }
+        .hashtags { color: #ffffff; font-weight: 700; margin-top: 6px; font-size: 14px; }
+
+        /* Barre de navigation basse */
+        .nav-bar {
+            position: absolute; bottom: 0; width: 100%; height: 85px;
+            background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px);
+            color: #666; display: flex;
+            justify-content: space-around; align-items: center; padding-bottom: 20px;
+            border-top: 1px solid #eee; z-index: 30;
+        }
+        .nav-item { display: flex; flex-direction: column; align-items: center; font-size: 11px; font-weight: 600; cursor: pointer; transition: 0.2s; }
+        .nav-item i { font-size: 22px; margin-bottom: 4px; }
+        .nav-active { color: #FF4D6D; }
+        .nav-item:active { transform: scale(0.9); }
+    </style>
+</head>
+<body>
+
+    <div class="video-container">
+        <!-- Simulation d'une vidéo avec une image de fond -->
+        <img class="video-bg" src="https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?auto=format&fit=crop&q=80&w=1000" />
+
+        <div class="header">
+            <div class="logo"><span>UCA</span><span>NSI</span></div>
+        </div>
+
+        <div class="side-bar">
+            <div class="action-btn" onclick="this.style.color='#FF4D6D'">
+                <div class="icon-circle"><i class="fas fa-heart"></i></div>
+                Like
+            </div>
+            <div class="action-btn">
+                <div class="icon-circle"><i class="fas fa-comment"></i></div>
+                Comment
+            </div>
+            <div class="action-btn">
+                <div class="icon-circle"><i class="fas fa-share"></i></div>
+                Share
+            </div>
+            <div class="profile-container">
+                <img class="avatar" src="https://randomuser.me/api/portraits/women/44.jpg" />
+                <div class="plus-btn">+</div>
+            </div>
+        </div>
+
+        <div class="bottom-info">
+            <div class="username">@CreatorName</div>
+            <div class="description">Check out my story! Loving this new app.</div>
+            <div class="hashtags">#Dating #Chat #Ucansi #Love</div>
+        </div>
+
+        <nav class="nav-bar">
+            <div class="nav-item nav-active">
+                <i class="fas fa-play-circle"></i>
+                Video Feed
+            </div>
+            <div class="nav-item">
+                <i class="far fa-heart"></i>
+                Likes
+            </div>
+            <div class="nav-item">
+                <i class="far fa-comment-dots"></i>
+                Messages
+            </div>
+            <div class="nav-item">
+                <i class="far fa-user"></i>
+                Profile
+            </div>
+        </nav>
+    </div>
+
+</body>
+</html>
