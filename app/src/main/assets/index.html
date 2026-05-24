@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Ucansi Live</title>
+    <title>Ucansi Reels</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         :root {
@@ -11,19 +11,39 @@
             --green: #2ECC71;
         }
 
-        body { margin: 0; background: #000; color: white; font-family: sans-serif; height: 100vh; overflow: hidden; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: sans-serif; }
+        body { background: #000; color: white; overflow: hidden; height: 100vh; width: 100vw; }
 
-        /* Top Header */
+        .reels-container {
+            height: 100vh;
+            overflow-y: scroll;
+            scroll-snap-type: y mandatory;
+        }
+
+        .reel {
+            height: 100vh;
+            width: 100vw;
+            scroll-snap-align: start;
+            position: relative;
+            background: #000;
+        }
+
+        video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* Overlays */
         .top-bar {
-            position: fixed; top: 45px; width: 100%; display: flex;
+            position: absolute; top: 45px; width: 100%; display: flex;
             justify-content: space-between; align-items: center; padding: 0 20px; z-index: 10;
         }
         .live-tag { background: red; padding: 2px 8px; border-radius: 4px; font-size: 12px; font-weight: bold; }
 
-        /* Sidebar Icons */
         .sidebar {
-            position: fixed; right: 15px; top: 50%; transform: translateY(-50%);
-            display: flex; flex-direction: column; gap: 15px; align-items: center;
+            position: absolute; right: 15px; bottom: 150px;
+            display: flex; flex-direction: column; gap: 15px; align-items: center; z-index: 10;
         }
         .money-btn {
             width: 45px; height: 45px; background: var(--green); border-radius: 50%;
@@ -33,35 +53,30 @@
         .wa { background: #25D366; }
         .ig { background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888); }
 
-        /* Floating Comments */
-        .comments { position: fixed; bottom: 120px; left: 20px; display: flex; flex-direction: column; gap: 8px; }
-        .bubble { background: rgba(0,0,0,0.5); padding: 6px 15px; border-radius: 20px; font-size: 14px; color: #FFD700; }
+        .info-section { position: absolute; bottom: 120px; left: 20px; z-index: 10; }
+        .username { font-weight: bold; font-size: 18px; margin-bottom: 5px; }
+        .description { font-size: 14px; margin-bottom: 15px; }
+        .bubble { background: rgba(0,0,0,0.5); padding: 6px 15px; border-radius: 20px; font-size: 14px; color: #FFD700; margin-bottom: 5px; width: fit-content; }
 
-        /* Bottom Nav & Rainbow Plus */
+        /* Bottom Nav */
         .bottom-nav {
             position: fixed; bottom: 0; width: 100%; height: 80px;
-            background: rgba(0,0,0,0.8); display: flex; justify-content: space-around; align-items: center;
-            padding: 0 10px; font-size: 12px;
+            background: linear-gradient(transparent, rgba(0,0,0,0.9)); display: flex; justify-content: space-around; align-items: center;
+            padding: 0 10px; font-size: 12px; z-index: 20;
         }
-        .nav-item { opacity: 0.6; }
-        .active { opacity: 1; }
-
         .plus-container {
             position: absolute; left: 50%; top: -15px; transform: translateX(-50%);
             width: 65px; height: 65px; display: flex; align-items: center; justify-content: center;
         }
-        .plus-glow {
-            position: absolute; width: 100%; height: 100%;
-            background: var(--rainbow); border-radius: 50%; filter: blur(8px);
-        }
+        .plus-glow { position: absolute; width: 100%; height: 100%; background: var(--rainbow); border-radius: 50%; filter: blur(8px); }
         .plus-btn {
-            position: relative; width: 55px; height: 55px; background: white;
-            border-radius: 50%; border: 3px solid transparent;
-            background-image: linear-gradient(white, white), var(--rainbow);
+            position: relative; width: 55px; height: 55px; background: white; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center; color: black; font-size: 30px;
+            border: 3px solid transparent; background-image: linear-gradient(white, white), var(--rainbow);
             background-origin: border-box; background-clip: content-box, border-box;
-            display: flex; align-items: center; justify-content: center;
-            color: black; font-size: 30px;
         }
+
+        .reels-container::-webkit-scrollbar { display: none; }
     </style>
 </head>
 <body>
@@ -72,32 +87,78 @@
         <div class="live-tag">Live</div>
     </div>
 
-    <div class="sidebar">
-        <div class="money-btn">$</div>
-        <div class="money-btn">$</div>
-        <i class="far fa-heart" style="font-size: 28px;"></i>
-        <i class="far fa-comment" style="font-size: 28px;"></i>
-        <i class="fas fa-share" style="font-size: 28px;"></i>
-        <div class="social-btn wa"><i class="fab fa-whatsapp"></i></div>
-        <div class="social-btn ig"><i class="fab fa-instagram"></i></div>
-    </div>
-
-    <div class="comments">
-        <div class="bubble">Wow! ❤️🔥</div>
-        <div class="bubble">Dere! ❤️🥰</div>
-        <div style="font-size: 14px; padding-left: 10px;">So cool.</div>
+    <div class="reels-container" id="reels">
+        <!-- Reel 1 -->
+        <div class="reel">
+            <video loop playsinline muted src="https://assets.mixkit.co/videos/preview/mixkit-girl-in-neon-lighting-in-the-night-city-2189-large.mp4"></video>
+            <div class="sidebar">
+                <div class="money-btn">$</div>
+                <div class="money-btn">$</div>
+                <i class="far fa-heart" style="font-size: 30px;"></i>
+                <i class="far fa-comment" style="font-size: 30px;"></i>
+                <i class="fas fa-share" style="font-size: 30px;"></i>
+                <div class="social-btn wa"><i class="fab fa-whatsapp"></i></div>
+                <div class="social-btn ig"><i class="fab fa-instagram"></i></div>
+            </div>
+            <div class="info-section">
+                <div class="username">@Sarah_Neon</div>
+                <div class="description">Vivez en couleurs ! 🌈 #Rainbow #Ucansi</div>
+                <div class="bubble">Wow! ❤️🔥</div>
+                <div class="bubble">Dere! ❤️🥰</div>
+            </div>
+        </div>
+        <!-- Reel 2 -->
+        <div class="reel">
+            <video loop playsinline muted src="https://assets.mixkit.co/videos/preview/mixkit-winter-fashion-shoot-in-a-snowy-forest-34448-large.mp4"></video>
+            <div class="sidebar">
+                <div class="money-btn">$</div>
+                <div class="money-btn">$</div>
+                <i class="far fa-heart" style="font-size: 30px;"></i>
+                <i class="far fa-comment" style="font-size: 30px;"></i>
+                <i class="fas fa-share" style="font-size: 30px;"></i>
+                <div class="social-btn wa"><i class="fab fa-whatsapp"></i></div>
+                <div class="social-btn ig"><i class="fab fa-instagram"></i></div>
+            </div>
+            <div class="info-section">
+                <div class="username">@Forest_Model</div>
+                <div class="description">Winter is coming... ❄️ #Fashion #Forest</div>
+            </div>
+        </div>
     </div>
 
     <nav class="bottom-nav">
-        <div class="nav-item active">Accueil</div>
-        <div class="nav-item">Découvrir</div>
+        <div>Accueil</div>
+        <div>Découvrir</div>
         <div class="plus-container">
             <div class="plus-glow"></div>
             <div class="plus-btn"><i class="fas fa-plus"></i></div>
         </div>
-        <div class="nav-item">Messages</div>
-        <div class="nav-item">Compte</div>
+        <div>Messages</div>
+        <div>Compte</div>
     </nav>
 
+    <script>
+        const container = document.getElementById('reels');
+        const videos = document.querySelectorAll('video');
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                const video = entry.target.querySelector('video');
+                if (entry.isIntersecting) {
+                    video.play();
+                } else {
+                    video.pause();
+                    video.currentTime = 0;
+                }
+            });
+        }, { threshold: 0.8 });
+
+        document.querySelectorAll('.reel').forEach(reel => observer.observe(reel));
+
+        // Activer le son au premier clic
+        document.body.addEventListener('click', () => {
+            videos.forEach(v => v.muted = false);
+        }, { once: true });
+    </script>
 </body>
 </html>
