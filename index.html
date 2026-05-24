@@ -9,321 +9,165 @@
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="theme-color" content="#000000">
 
-    <title>Ucansi</title>
+    <title>Ucansi - Social Network</title>
     <link rel="manifest" href="manifest.json">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
     <style>
         :root {
             --safe-top: env(safe-area-inset-top);
             --safe-bottom: env(safe-area-inset-bottom);
+            --primary: #FF4D6D;
+            --secondary: #2E5BFF;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Roboto, sans-serif; -webkit-tap-highlight-color: transparent; }
 
-        body, html {
-            height: 100%;
-            height: 100dvh;
-            background: black;
-            color: white;
-            overflow: hidden;
-            width: 100%;
-            position: fixed;
+        body, html { height: 100%; height: 100dvh; background: black; color: white; overflow: hidden; width: 100%; position: fixed; }
+
+        /* --- ÉCRAN D'ACCUEIL (LANDING) --- */
+        #landing-page {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(135deg, #000 0%, #1a1a1a 100%);
+            z-index: 1000; display: flex; flex-direction: column; align-items: center; justify-content: center;
+            text-align: center; padding: 20px; transition: 0.5s ease-out;
         }
 
-        .video-feed {
-            width: 100%;
-            height: 100%;
-            overflow-y: scroll;
-            scroll-snap-type: y mandatory;
-            scroll-behavior: smooth;
-            -webkit-overflow-scrolling: touch;
+        .landing-logo { font-size: 48px; font-weight: 900; letter-spacing: 5px; margin-bottom: 40px; }
+        .landing-logo span:first-child { color: var(--secondary); }
+        .landing-logo span:last-child { color: var(--primary); }
+
+        .choice-container { width: 100%; max-width: 300px; display: flex; flex-direction: column; gap: 20px; }
+
+        .btn-choice {
+            padding: 18px; border-radius: 15px; font-size: 16px; font-weight: bold;
+            text-decoration: none; display: flex; align-items: center; justify-content: center; gap: 15px;
+            transition: 0.3s; cursor: pointer; border: none;
         }
 
-        .video-slide {
-            position: relative;
-            width: 100%;
-            height: 100dvh;
-            scroll-snap-align: start;
-            scroll-snap-stop: always;
-            display: flex;
-            flex-direction: column;
-            background: #000;
-        }
+        .web-btn { background: white; color: black; box-shadow: 0 4px 15px rgba(255,255,255,0.2); }
+        .apk-btn { background: var(--primary); color: white; box-shadow: 0 4px 15px rgba(255, 77, 109, 0.4); }
 
-        .video-player {
-            position: absolute;
-            top: 0; left: 0;
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            z-index: 1;
-        }
+        .btn-choice:active { transform: scale(0.95); }
 
-        .overlay {
-            position: absolute;
-            bottom: 0; left: 0; width: 100%; height: 60%;
-            background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
-            z-index: 2;
-            pointer-events: none;
-        }
+        /* --- RÉSEAU SOCIAL (FEED) --- */
+        #main-app { display: none; width: 100%; height: 100%; }
 
-        .header {
-            position: fixed;
-            top: calc(20px + var(--safe-top));
-            width: 100%;
-            text-align: center;
-            z-index: 100;
-            pointer-events: none;
-        }
-        .logo { font-size: 26px; font-weight: 800; letter-spacing: 2px; text-shadow: 0 2px 10px rgba(0,0,0,0.5); pointer-events: auto; }
-        .logo span:first-child { color: #2E5BFF; }
-        .logo span:last-child { color: #FF4D6D; }
+        .video-feed { width: 100%; height: 100%; overflow-y: scroll; scroll-snap-type: y mandatory; scroll-behavior: smooth; -webkit-overflow-scrolling: touch; }
+        .video-slide { position: relative; width: 100%; height: 100dvh; scroll-snap-align: start; scroll-snap-stop: always; background: #000; }
+        .video-player { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; z-index: 1; }
+        .overlay { position: absolute; bottom: 0; left: 0; width: 100%; height: 60%; background: linear-gradient(to top, rgba(0,0,0,0.8), transparent); z-index: 2; pointer-events: none; }
 
-        .side-bar {
-            position: absolute;
-            right: 12px;
-            bottom: calc(100px + var(--safe-bottom));
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-            align-items: center;
-            z-index: 20;
-        }
-        .action-btn { display: flex; flex-direction: column; align-items: center; font-size: 11px; font-weight: 600; cursor: pointer; transition: transform 0.1s; }
-        .action-btn:active { transform: scale(0.9); }
+        .header { position: fixed; top: calc(15px + var(--safe-top)); width: 100%; text-align: center; z-index: 100; pointer-events: none; }
+        .logo-small { font-size: 24px; font-weight: 800; letter-spacing: 2px; text-shadow: 0 2px 10px rgba(0,0,0,0.5); pointer-events: auto; }
+        .logo-small span:first-child { color: var(--secondary); }
+        .logo-small span:last-child { color: var(--primary); }
 
-        .icon-circle {
-            width: 44px; height: 44px; border-radius: 50%;
-            background: rgba(0,0,0,0.3);
-            backdrop-filter: blur(5px);
-            display: flex; align-items: center; justify-content: center;
-            font-size: 22px; margin-bottom: 4px; border: 1px solid rgba(255,255,255,0.2);
-        }
-
-        /* Avatar Container */
-        .avatar-box { position: relative; margin-bottom: 10px; }
+        .side-bar { position: absolute; right: 12px; bottom: calc(100px + var(--safe-bottom)); display: flex; flex-direction: column; gap: 15px; align-items: center; z-index: 20; }
+        .icon-circle { width: 44px; height: 44px; border-radius: 50%; background: rgba(0,0,0,0.3); backdrop-filter: blur(5px); display: flex; align-items: center; justify-content: center; font-size: 22px; margin-bottom: 4px; border: 1px solid rgba(255,255,255,0.2); }
         .avatar { width: 48px; height: 48px; border-radius: 50%; border: 2px solid white; object-fit: cover; }
-        .follow-badge {
-            position: absolute; bottom: -5px; left: 50%; transform: translateX(-50%);
-            background: #FF4D6D; color: white; width: 18px; height: 18px;
-            border-radius: 50%; display: flex; align-items: center; justify-content: center;
-            font-size: 12px; border: 2px solid #000; transition: 0.3s;
-        }
-        .followed { background: #2E5BFF; transform: translateX(-50%) rotate(360deg); }
 
-        .bottom-info {
-            position: absolute;
-            left: 15px;
-            bottom: calc(85px + var(--safe-bottom));
-            max-width: 80%;
-            z-index: 20;
-            pointer-events: none;
-        }
-        .username { font-weight: bold; font-size: 16px; margin-bottom: 6px; pointer-events: auto; display: flex; align-items: center; gap: 4px; }
-        .description { font-size: 14px; line-height: 1.3; margin-bottom: 8px; pointer-events: auto; }
+        .bottom-info { position: absolute; left: 15px; bottom: calc(85px + var(--safe-bottom)); max-width: 80%; z-index: 20; pointer-events: none; }
+        .username { font-weight: bold; font-size: 16px; margin-bottom: 4px; pointer-events: auto; }
+        .description { font-size: 14px; line-height: 1.3; pointer-events: auto; }
 
-        /* Music Ticker */
-        .music-box { display: flex; align-items: center; gap: 8px; font-size: 13px; pointer-events: auto; overflow: hidden; width: 200px; }
-        .music-ticker { white-space: nowrap; animation: ticker 10s linear infinite; }
-        @keyframes ticker {
-            0% { transform: translateX(100%); }
-            100% { transform: translateX(-100%); }
-        }
-
-        .nav-bar {
-            position: fixed;
-            bottom: 0;
-            width: 100%;
-            height: calc(65px + var(--safe-bottom));
-            background: rgba(0, 0, 0, 0.9);
-            backdrop-filter: blur(15px);
-            color: #fff;
-            display: flex;
-            justify-content: space-around;
-            align-items: center;
-            padding-bottom: var(--safe-bottom);
-            border-top: 0.5px solid rgba(255,255,255,0.1);
-            z-index: 100;
-        }
-        .nav-item { display: flex; flex-direction: column; align-items: center; font-size: 10px; font-weight: 500; opacity: 0.6; }
+        .nav-bar { position: fixed; bottom: 0; width: 100%; height: calc(65px + var(--safe-bottom)); background: rgba(0,0,0,0.9); backdrop-filter: blur(15px); color: #fff; display: flex; justify-content: space-around; align-items: center; padding-bottom: var(--safe-bottom); border-top: 0.5px solid rgba(255,255,255,0.1); z-index: 100; }
+        .nav-item { display: flex; flex-direction: column; align-items: center; font-size: 10px; opacity: 0.6; }
         .nav-active { opacity: 1; }
-        .nav-item i { font-size: 20px; margin-bottom: 3px; }
 
         .video-feed::-webkit-scrollbar { display: none; }
-
-        /* Double Tap Heart */
-        .big-heart {
-            position: absolute;
-            top: 50%; left: 50%;
-            transform: translate(-50%, -50%) scale(0);
-            color: #FF4D6D;
-            font-size: 100px;
-            z-index: 50;
-            pointer-events: none;
-            text-shadow: 0 0 20px rgba(0,0,0,0.5);
-        }
-        .heart-animate { animation: heartPop 0.8s ease-out; }
-        @keyframes heartPop {
-            0% { transform: translate(-50%, -50%) scale(0); opacity: 0; }
-            20% { transform: translate(-50%, -50%) scale(1.2); opacity: 1; }
-            80% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
-            100% { transform: translate(-50%, -50%) scale(1.5); opacity: 0; }
-        }
-
-        /* Progress Bar */
-        .progress-bar {
-            position: absolute;
-            bottom: 0; left: 0;
-            height: 2px;
-            background: rgba(255,255,255,0.5);
-            width: 0%;
-            z-index: 30;
-            transition: width 0.1s linear;
-        }
-
-        .liked .icon-circle i { color: #FF4D6D; }
     </style>
 </head>
 <body>
 
-    <div class="header">
-        <div class="logo"><span>UCA</span><span>NSI</span></div>
-        <!-- Bouton Installer (PWA) -->
-        <div id="installBtn" title="Installer l'application" style="position: absolute; right: 60px; top: 8px; background: rgba(255, 255, 255, 0.2); backdrop-filter: blur(5px); color: white; width: 35px; height: 35px; border-radius: 50%; display: none; align-items: center; justify-content: center; cursor: pointer; border: 1px solid rgba(255,255,255,0.3); z-index: 110;">
-            <i class="fas fa-plus"></i>
+    <!-- ÉCRAN DE CHOIX -->
+    <div id="landing-page">
+        <div class="landing-logo"><span>UCA</span><span>NSI</span></div>
+        <div class="choice-container">
+            <button class="btn-choice web-btn" onclick="startApp()">
+                <i class="fas fa-globe"></i> Continuer sur le Web
+            </button>
+            <a href="app-debug.apk" download class="btn-choice apk-btn">
+                <i class="fab fa-android"></i> Télécharger l'App APK
+            </a>
         </div>
-        <!-- Icône de téléchargement direct de l'APK -->
-        <a id="apkDownloadBtn" href="app-debug.apk" download title="Télécharger l'APK" style="position: absolute; right: 15px; top: 8px; background: #FF4D6D; color: white; width: 35px; height: 35px; border-radius: 50%; display: flex; align-items: center; justify-content: center; text-decoration: none; box-shadow: 0 4px 10px rgba(255, 77, 109, 0.4); z-index: 110;">
-            <i class="fas fa-download"></i>
-        </a>
+        <p style="margin-top: 30px; font-size: 12px; color: #666;">Version 1.0 - Le futur du social</p>
     </div>
 
-    <div class="video-feed" id="feed">
-        <!-- REEL 1 -->
-        <div class="video-slide" ontouchstart="handleTouch(event, this)">
-            <video class="video-player" loop playsinline muted>
-                <source src="https://assets.mixkit.co/videos/preview/mixkit-girl-in-neon-lighting-in-the-night-city-2189-large.mp4" type="video/mp4">
-            </video>
-            <div class="big-heart"><i class="fas fa-heart"></i></div>
-            <div class="progress-bar"></div>
-            <div class="overlay"></div>
+    <!-- APPLICATION RÉELLE -->
+    <div id="main-app">
+        <div class="header">
+            <div class="logo-small" onclick="window.location.reload()"><span>UCA</span><span>NSI</span></div>
+        </div>
 
-            <div class="side-bar">
-                <div class="avatar-box" onclick="toggleFollow(this)">
+        <div class="video-feed">
+            <!-- REEL 1 -->
+            <div class="video-slide">
+                <video class="video-player" loop playsinline muted>
+                    <source src="https://assets.mixkit.co/videos/preview/mixkit-girl-in-neon-lighting-in-the-night-city-2189-large.mp4" type="video/mp4">
+                </video>
+                <div class="overlay"></div>
+                <div class="side-bar">
                     <img class="avatar" src="https://randomuser.me/api/portraits/women/44.jpg" alt="p1">
-                    <div class="follow-badge">+</div>
-                </div>
-                <div class="action-btn" onclick="toggleLike(this, '1.2M')">
                     <div class="icon-circle"><i class="fas fa-heart"></i></div>
-                    <span>1.2M</span>
-                </div>
-                <div class="action-btn">
                     <div class="icon-circle"><i class="fas fa-comment"></i></div>
-                    450
-                </div>
-                <div class="action-btn" onclick="shareApp()">
                     <div class="icon-circle"><i class="fas fa-share"></i></div>
-                    Share
+                </div>
+                <div class="bottom-info">
+                    <div class="username">@Sarah_Neon</div>
+                    <div class="description">Bienvenue sur Ucansi ! ✨ #NewEra</div>
                 </div>
             </div>
 
-            <div class="bottom-info">
-                <div class="username">@Sarah_Neon <i class="fas fa-check-circle" style="color: #2E5BFF; font-size: 14px;"></i></div>
-                <div class="description">Cyberpunk vibes tonight! ✨ #NightLife #Ucansi</div>
-                <div class="music-box">
-                    <i class="fas fa-music"></i>
-                    <div class="music-ticker">Sarah_Neon • Original Audio - Neon Dreams</div>
-                </div>
-            </div>
-        </div>
-
-        <!-- REEL 2 -->
-        <div class="video-slide" ontouchstart="handleTouch(event, this)">
-            <video class="video-player" loop playsinline muted>
-                <source src="https://assets.mixkit.co/videos/preview/mixkit-winter-fashion-shoot-in-a-snowy-forest-34448-large.mp4" type="video/mp4">
-            </video>
-            <div class="big-heart"><i class="fas fa-heart"></i></div>
-            <div class="progress-bar"></div>
-            <div class="overlay"></div>
-
-            <div class="side-bar">
-                <div class="avatar-box" onclick="toggleFollow(this)">
+            <!-- REEL 2 -->
+            <div class="video-slide">
+                <video class="video-player" loop playsinline muted>
+                    <source src="https://assets.mixkit.co/videos/preview/mixkit-winter-fashion-shoot-in-a-snowy-forest-34448-large.mp4" type="video/mp4">
+                </video>
+                <div class="overlay"></div>
+                <div class="side-bar">
                     <img class="avatar" src="https://randomuser.me/api/portraits/men/32.jpg" alt="p2">
-                    <div class="follow-badge">+</div>
-                </div>
-                <div class="action-btn" onclick="toggleLike(this, '850K')">
                     <div class="icon-circle"><i class="fas fa-heart"></i></div>
-                    <span>850K</span>
-                </div>
-                <div class="action-btn">
                     <div class="icon-circle"><i class="fas fa-comment"></i></div>
-                    1.2K
-                </div>
-                <div class="action-btn" onclick="shareApp()">
                     <div class="icon-circle"><i class="fas fa-share"></i></div>
-                    Share
                 </div>
-            </div>
-
-            <div class="bottom-info">
-                <div class="username">@Forest_Model <i class="fas fa-check-circle" style="color: #2E5BFF; font-size: 14px;"></i></div>
-                <div class="description">Winter is coming... ❄️ #Fashion #Forest</div>
-                <div class="music-box">
-                    <i class="fas fa-music"></i>
-                    <div class="music-ticker">Winter Sounds • Snowy Night Beats</div>
+                <div class="bottom-info">
+                    <div class="username">@Forest_Model</div>
+                    <div class="description">Testez le swipe vers le haut ! ❄️</div>
                 </div>
             </div>
         </div>
-    </div>
 
-    <nav class="nav-bar">
-        <div class="nav-item nav-active"><i class="fas fa-home"></i>Home</div>
-        <div class="nav-item"><i class="fas fa-search"></i>Explore</div>
-        <div class="nav-item" style="font-size: 28px; opacity: 1;"><i class="fas fa-plus-square"></i></div>
-        <div class="nav-item"><i class="fas fa-comment-alt"></i>Chat</div>
-        <div class="nav-item"><i class="fas fa-user"></i>Profile</div>
-    </nav>
+        <nav class="nav-bar">
+            <div class="nav-item nav-active"><i class="fas fa-home"></i>Home</div>
+            <div class="nav-item"><i class="fas fa-search"></i>Explore</div>
+            <div class="nav-item" style="font-size: 26px;"><i class="fas fa-plus-square"></i></div>
+            <div class="nav-item"><i class="fas fa-comment-alt"></i>Chat</div>
+            <div class="nav-item"><i class="fas fa-user"></i>Profile</div>
+        </nav>
+    </div>
 
     <script>
-        // Gestion du bouton de téléchargement (Installation PWA)
-        let deferredPrompt;
-        const installBtn = document.getElementById('installBtn');
+        // Fonction pour entrer dans l'application
+        function startApp() {
+            document.getElementById('landing-page').style.opacity = '0';
+            setTimeout(() => {
+                document.getElementById('landing-page').style.display = 'none';
+                document.getElementById('main-app').style.display = 'block';
+                // Lancer la première vidéo
+                const firstVideo = document.querySelector('video');
+                if (firstVideo) firstVideo.play();
+            }, 500);
+        }
 
-        window.addEventListener('beforeinstallprompt', (e) => {
-            e.preventDefault();
-            deferredPrompt = e;
-            installBtn.style.display = 'block'; // Affiche le bouton si l'app peut être installée
-        });
-
-        installBtn.addEventListener('click', () => {
-            if (deferredPrompt) {
-                deferredPrompt.prompt();
-                deferredPrompt.userChoice.then((choiceResult) => {
-                    if (choiceResult.outcome === 'accepted') {
-                        installBtn.style.display = 'none';
-                    }
-                    deferredPrompt = null;
-                });
-            } else {
-                // Fallback si l'événement n'a pas encore eu lieu
-                alert("Pour installer : Appuyez sur les 3 points en haut à droite de Chrome, puis sur 'Installer l'application'.");
-            }
-        });
-
-        // Enregistrement du Service Worker
-
-        // Intersection Observer pour Play/Pause
+        // Play/Pause au scroll
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 const video = entry.target.querySelector('video');
-                const progressBar = entry.target.querySelector('.progress-bar');
                 if (entry.isIntersecting) {
-                    video.play();
-                    // Mise à jour de la barre de progression
-                    video.ontimeupdate = () => {
-                        const progress = (video.currentTime / video.duration) * 100;
-                        progressBar.style.width = progress + '%';
-                    };
+                    if (document.getElementById('main-app').style.display === 'block') {
+                        video.play();
+                    }
                 } else {
                     video.pause();
                     video.currentTime = 0;
@@ -333,54 +177,15 @@
 
         document.querySelectorAll('.video-slide').forEach(slide => observer.observe(slide));
 
-        // Double Tap pour Liker
-        let lastTap = 0;
-        function handleTouch(e, slide) {
-            const now = Date.now();
-            const DOUBLE_TAP_DELAY = 300;
-            if (now - lastTap < DOUBLE_TAP_DELAY) {
-                showBigHeart(slide);
-                const likeBtn = slide.querySelector('.action-btn');
-                if (!likeBtn.classList.contains('liked')) {
-                    toggleLike(likeBtn, likeBtn.querySelector('span').innerText);
-                }
-            }
-            lastTap = now;
-        }
-
-        function showBigHeart(slide) {
-            const heart = slide.querySelector('.big-heart');
-            heart.classList.remove('heart-animate');
-            void heart.offsetWidth; // Trigger reflow
-            heart.classList.add('heart-animate');
-        }
-
-        function toggleLike(btn, count) {
-            btn.classList.toggle('liked');
-        }
-
-        function toggleFollow(box) {
-            const badge = box.querySelector('.follow-badge');
-            badge.classList.toggle('followed');
-            badge.innerHTML = badge.classList.contains('followed') ? '✓' : '+';
-        }
-
-        function shareApp() {
-            if (navigator.share) {
-                navigator.share({ title: 'Ucansi', url: window.location.href });
-            }
-        }
-
-        // Son au premier clic
+        // Activer le son
         document.body.addEventListener('click', () => {
             document.querySelectorAll('video').forEach(v => v.muted = false);
         }, { once: true });
 
-        // Empêcher scroll hors du feed
-        document.addEventListener('touchmove', e => {
-            if (!e.target.closest('.video-feed')) e.preventDefault();
-        }, { passive: false });
+        // Enregistrement Service Worker
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('sw.js');
+        }
     </script>
-
 </body>
 </html>
