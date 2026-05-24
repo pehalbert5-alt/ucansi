@@ -5,6 +5,10 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import com.example.ucansi.ui.theme.UcansiTheme
 
 class MainActivity : ComponentActivity() {
@@ -14,7 +18,13 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             UcansiTheme {
-                MainScreen()
+                var isLoggedIn by remember { mutableStateOf(false) }
+
+                if (!isLoggedIn) {
+                    LoginScreen(onLoginSuccess = { isLoggedIn = true })
+                } else {
+                    MainScreen()
+                }
             }
         }
     }
