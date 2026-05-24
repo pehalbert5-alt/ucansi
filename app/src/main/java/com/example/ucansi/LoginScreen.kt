@@ -1,5 +1,6 @@
 package com.example.ucansi
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
@@ -12,6 +13,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.blur
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
@@ -48,7 +50,7 @@ fun LoginScreen(onLoginSuccess: () -> Unit) {
                 .fillMaxWidth()
                 .padding(32.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(20.dp)
+            verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             // Logo
             Text(
@@ -60,9 +62,9 @@ fun LoginScreen(onLoginSuccess: () -> Unit) {
                 )
             )
 
-            Spacer(modifier = Modifier.height(20.dp))
+            Spacer(modifier = Modifier.height(16.dp))
 
-            // Input Fields
+            // Email Field
             OutlinedTextField(
                 value = email,
                 onValueChange = { email = it },
@@ -77,6 +79,7 @@ fun LoginScreen(onLoginSuccess: () -> Unit) {
                 shape = RoundedCornerShape(16.dp)
             )
 
+            // Password Field
             OutlinedTextField(
                 value = password,
                 onValueChange = { password = it },
@@ -92,9 +95,7 @@ fun LoginScreen(onLoginSuccess: () -> Unit) {
                 shape = RoundedCornerShape(16.dp)
             )
 
-            Spacer(modifier = Modifier.height(10.dp))
-
-            // Login Button with Rainbow Border
+            // Login Button
             Button(
                 onClick = onLoginSuccess,
                 modifier = Modifier
@@ -104,12 +105,32 @@ fun LoginScreen(onLoginSuccess: () -> Unit) {
                 colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent),
                 shape = RoundedCornerShape(28.dp)
             ) {
-                Text(
-                    "Se connecter",
-                    color = Color.White,
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 18.sp
-                )
+                Text("Se connecter", color = Color.White, fontWeight = FontWeight.Bold, fontSize = 16.sp)
+            }
+
+            // --- SEPARATOR ---
+            Row(
+                modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                HorizontalDivider(modifier = Modifier.weight(1f), color = Color.DarkGray)
+                Text(" OU ", color = Color.Gray, fontSize = 12.sp, modifier = Modifier.padding(horizontal = 8.dp))
+                HorizontalDivider(modifier = Modifier.weight(1f), color = Color.DarkGray)
+            }
+
+            // --- GOOGLE SIGN IN BUTTON ---
+            Button(
+                onClick = { /* Simulation Google Auth */ onLoginSuccess() },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(56.dp),
+                colors = ButtonDefaults.buttonColors(containerColor = Color.White),
+                shape = RoundedCornerShape(28.dp)
+            ) {
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    // Note: In a real project you'd add the Google icon resource
+                    Text("Continuer avec Google", color = Color.Black, fontWeight = FontWeight.SemiBold)
+                }
             }
 
             TextButton(onClick = { /* Handle sign up */ }) {
