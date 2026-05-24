@@ -22,6 +22,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.ucansi.ui.theme.UcansiTheme
 
+// Brand Colors
+val UcansiBlue = Color(0xFF4A90E2)
+val UcansiPink = Color(0xFFFF4D6D)
+val UcansiPurple = Color(0xFF9B51E0)
+
 @Composable
 fun MainScreen() {
     Scaffold(
@@ -37,12 +42,12 @@ fun MainScreen() {
             Box(
                 modifier = Modifier
                     .fillMaxSize()
-                    .background(Color(0xFF1A1A1A)) // Dark placeholder
+                    .background(Color(0xFF0A0A0A))
             ) {
                 Text(
                     "Video Content Placeholder",
                     modifier = Modifier.align(Alignment.Center),
-                    color = Color.Gray
+                    color = Color.DarkGray
                 )
             }
 
@@ -62,9 +67,27 @@ fun MainScreen() {
                 verticalArrangement = Arrangement.spacedBy(20.dp)
             ) {
                 ProfileWithPlus()
-                ActionIcon(Icons.Default.Favorite, "Like", "1.2M")
-                ActionIcon(Icons.AutoMirrored.Filled.Comment, "Comment", "12.5K")
-                ActionIcon(Icons.Default.Share, "Share", "102")
+                
+                ActionIcon(
+                    icon = Icons.Default.Favorite,
+                    label = "Like",
+                    count = "1.2M",
+                    gradient = Brush.verticalGradient(listOf(UcansiBlue, UcansiPink))
+                )
+                
+                ActionIcon(
+                    icon = Icons.AutoMirrored.Filled.Comment,
+                    label = "Comment",
+                    count = "12.5K",
+                    gradient = Brush.verticalGradient(listOf(UcansiPink, UcansiPurple))
+                )
+                
+                ActionIcon(
+                    icon = Icons.Default.Share,
+                    label = "Share",
+                    count = "102",
+                    gradient = Brush.verticalGradient(listOf(UcansiPurple, UcansiBlue))
+                )
             }
 
             // Bottom left info
@@ -94,7 +117,7 @@ fun MainScreen() {
 @Composable
 fun UcansiTopLogo(modifier: Modifier = Modifier) {
     val gradient = Brush.horizontalGradient(
-        colors = listOf(Color(0xFF4A90E2), Color(0xFFFF4D6D))
+        colors = listOf(UcansiBlue, UcansiPink)
     )
     Text(
         text = "UCANSI",
@@ -108,13 +131,20 @@ fun UcansiTopLogo(modifier: Modifier = Modifier) {
 }
 
 @Composable
-fun ActionIcon(icon: ImageVector, label: String, count: String) {
+fun ActionIcon(
+    icon: ImageVector,
+    label: String,
+    count: String,
+    gradient: Brush
+) {
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
         Box(
             modifier = Modifier
-                .size(45.dp)
+                .size(50.dp)
                 .clip(CircleShape)
-                .background(Color.White.copy(alpha = 0.2f)),
+                .background(gradient)
+                .padding(1.dp) // Border effect
+                .background(Color.Black.copy(alpha = 0.1f), CircleShape),
             contentAlignment = Alignment.Center
         ) {
             Icon(
@@ -128,6 +158,7 @@ fun ActionIcon(icon: ImageVector, label: String, count: String) {
             text = count,
             color = Color.White,
             fontSize = 12.sp,
+            fontWeight = FontWeight.Medium,
             modifier = Modifier.padding(top = 4.dp)
         )
     }
@@ -135,26 +166,29 @@ fun ActionIcon(icon: ImageVector, label: String, count: String) {
 
 @Composable
 fun ProfileWithPlus() {
-    Box(modifier = Modifier.size(50.dp)) {
+    Box(modifier = Modifier.size(55.dp), contentAlignment = Alignment.Center) {
+        // Profile Image Placeholder
         Box(
             modifier = Modifier
-                .size(45.dp)
+                .size(48.dp)
                 .clip(CircleShape)
-                .background(Color.Gray) // Placeholder for profile image
+                .background(Color.Gray)
         )
+        // Plus Button
         Box(
             modifier = Modifier
-                .size(20.dp)
+                .size(22.dp)
+                .align(Alignment.BottomCenter)
+                .offset(y = 2.dp)
                 .clip(CircleShape)
-                .background(Color(0xFFFF4D6D))
-                .align(Alignment.BottomCenter),
+                .background(UcansiPink),
             contentAlignment = Alignment.Center
         ) {
             Icon(
                 imageVector = Icons.Default.Add,
                 contentDescription = "Add",
                 tint = Color.White,
-                modifier = Modifier.size(14.dp)
+                modifier = Modifier.size(16.dp)
             )
         }
     }
@@ -170,11 +204,9 @@ fun UcansiBottomNavigation() {
             icon = { 
                 Box(
                     modifier = Modifier
-                        .size(28.dp)
+                        .size(32.dp)
                         .background(
-                            brush = Brush.linearGradient(
-                                colors = listOf(Color(0xFF4A90E2), Color(0xFFFF4D6D))
-                            ),
+                            brush = Brush.linearGradient(colors = listOf(UcansiBlue, UcansiPink)),
                             shape = RoundedCornerShape(8.dp)
                         ),
                     contentAlignment = Alignment.Center
@@ -182,28 +214,32 @@ fun UcansiBottomNavigation() {
                     Icon(Icons.Default.PlayArrow, contentDescription = null, tint = Color.White)
                 }
             },
-            label = { Text("Video Feed") },
+            label = { Text("Feed", fontWeight = FontWeight.Bold) },
             selected = true,
             onClick = {},
             colors = NavigationBarItemDefaults.colors(
-                selectedIconColor = Color(0xFFFF4D6D),
-                selectedTextColor = Color(0xFFFF4D6D)
+                selectedIconColor = UcansiPink,
+                selectedTextColor = UcansiPink,
+                indicatorColor = Color.Transparent
             )
         )
+        
+        val itemModifier = Modifier.size(26.dp)
+        
         NavigationBarItem(
-            icon = { Icon(Icons.Outlined.FavoriteBorder, contentDescription = "Likes") },
+            icon = { Icon(Icons.Outlined.FavoriteBorder, contentDescription = "Likes", modifier = itemModifier, tint = UcansiBlue) },
             label = { Text("Likes") },
             selected = false,
             onClick = {}
         )
         NavigationBarItem(
-            icon = { Icon(Icons.Outlined.MailOutline, contentDescription = "Messages") },
+            icon = { Icon(Icons.Outlined.MailOutline, contentDescription = "Messages", modifier = itemModifier, tint = UcansiPurple) },
             label = { Text("Messages") },
             selected = false,
             onClick = {}
         )
         NavigationBarItem(
-            icon = { Icon(Icons.Outlined.PersonOutline, contentDescription = "Profile") },
+            icon = { Icon(Icons.Outlined.PersonOutline, contentDescription = "Profile", modifier = itemModifier, tint = Color.Gray) },
             label = { Text("Profile") },
             selected = false,
             onClick = {}
