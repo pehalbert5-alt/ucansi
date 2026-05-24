@@ -25,13 +25,11 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             UcansiTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    WebViewScreen(
-                        // "file:///android_asset/" pointe vers votre dossier assets
-                        url = "file:///android_asset/index.html", 
-                        modifier = Modifier.padding(innerPadding)
-                    )
-                }
+                // On n'utilise plus Scaffold ou padding pour un plein écran total
+                WebViewScreen(
+                    url = "file:///android_asset/index.html",
+                    modifier = Modifier.fillMaxSize()
+                )
             }
         }
     }
