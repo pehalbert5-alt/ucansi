@@ -3,189 +3,185 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
-
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="mobile-web-app-capable" content="yes">
-    <meta name="theme-color" content="#000000">
-
-    <title>Ucansi - Social Network</title>
+    <title>Ucansi - Social Rainbow</title>
     <link rel="manifest" href="manifest.json">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-
     <style>
         :root {
-            --safe-top: env(safe-area-inset-top);
-            --safe-bottom: env(safe-area-inset-bottom);
-            --primary: #FF4D6D;
-            --secondary: #2E5BFF;
+            --rainbow: conic-gradient(#FF007F, #9D00FF, #007BFF, #00FBFF, #00FF88, #FFFF00, #FF8800, #FF007F);
+            --pink: #FF007F;
+            --purple: #9D00FF;
+            --cyan: #00FBFF;
+            --green: #2ECC71;
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Roboto, sans-serif; -webkit-tap-highlight-color: transparent; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: sans-serif; }
+        body { background: #000; color: white; overflow: hidden; height: 100vh; width: 100vw; }
 
-        body, html { height: 100%; height: 100dvh; background: black; color: white; overflow: hidden; width: 100%; position: fixed; }
-
-        /* --- ÉCRAN D'ACCUEIL (LANDING) --- */
+        /* --- LANDING PAGE --- */
         #landing-page {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: linear-gradient(135deg, #000 0%, #1a1a1a 100%);
-            z-index: 1000; display: flex; flex-direction: column; align-items: center; justify-content: center;
-            text-align: center; padding: 20px; transition: 0.5s ease-out;
+            position: fixed; inset: 0; background: #000; z-index: 2000;
+            display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center;
+        }
+        .landing-logo {
+            font-size: 50px; font-weight: 900; letter-spacing: 5px; margin-bottom: 40px;
+            background: linear-gradient(to right, #FF007F, #007BFF, #FFFF00);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+        }
+        .choice-btn {
+            width: 280px; padding: 18px; border-radius: 15px; font-size: 16px; font-weight: bold;
+            margin-bottom: 20px; cursor: pointer; border: none; transition: 0.3s;
+            display: flex; align-items: center; justify-content: center; gap: 10px;
+        }
+        .web-btn { background: white; color: #000; }
+        .apk-btn { background: var(--pink); color: white; text-decoration: none; }
+
+        /* --- LOGIN SCREEN --- */
+        #login-screen {
+            position: fixed; inset: 0; background: #000; z-index: 1000;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+        }
+        .login-card { width: 85%; max-width: 400px; text-align: center; }
+        input {
+            width: 100%; padding: 15px; margin-bottom: 15px; border-radius: 12px;
+            border: 1px solid #333; background: #111; color: white; outline: none;
+        }
+        .login-btn {
+            width: 100%; padding: 15px; border-radius: 30px; border: 2px solid transparent;
+            background-image: linear-gradient(#000, #000), var(--rainbow);
+            background-origin: border-box; background-clip: content-box, border-box;
+            color: white; font-size: 16px; font-weight: bold; cursor: pointer; margin-bottom: 15px;
+        }
+        .google-btn {
+            width: 100%; padding: 15px; border-radius: 30px; border: none;
+            background: white; color: black; font-size: 16px; font-weight: 600;
+            display: flex; align-items: center; justify-content: center; gap: 10px; cursor: pointer;
         }
 
-        .landing-logo { font-size: 48px; font-weight: 900; letter-spacing: 5px; margin-bottom: 40px; }
-        .landing-logo span:first-child { color: var(--secondary); }
-        .landing-logo span:last-child { color: var(--primary); }
+        /* --- MAIN APP / REELS --- */
+        #main-app { display: none; height: 100vh; }
+        .reels-container { height: 100vh; overflow-y: scroll; scroll-snap-type: y mandatory; }
+        .reel { height: 100vh; scroll-snap-align: start; position: relative; }
+        video { width: 100%; height: 100%; object-fit: cover; }
 
-        .choice-container { width: 100%; max-width: 300px; display: flex; flex-direction: column; gap: 20px; }
+        .top-bar { position: absolute; top: 40px; width: 100%; display: flex; justify-content: space-between; padding: 0 20px; z-index: 10; }
+        .sidebar { position: absolute; right: 15px; bottom: 150px; display: flex; flex-direction: column; gap: 15px; align-items: center; z-index: 10; }
 
-        .btn-choice {
-            padding: 18px; border-radius: 15px; font-size: 16px; font-weight: bold;
-            text-decoration: none; display: flex; align-items: center; justify-content: center; gap: 15px;
-            transition: 0.3s; cursor: pointer; border: none;
+        .icon-wrap {
+            width: 54px; height: 54px; border-radius: 50%; background: var(--rainbow);
+            padding: 3px; display: flex; align-items: center; justify-content: center;
+        }
+        .icon-in { width: 100%; height: 100%; border-radius: 50%; background: black; display: flex; align-items: center; justify-content: center; font-size: 24px; }
+        .rainbow-icon { background: var(--rainbow); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+
+        .money-btn { width: 45px; height: 45px; background: var(--green); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 24px; font-weight: bold; }
+
+        .bottom-nav {
+            position: fixed; bottom: 0; width: 100%; height: 80px;
+            background: rgba(0,0,0,0.8); display: flex; justify-content: space-around; align-items: center; z-index: 20;
+        }
+        .plus-btn {
+            width: 60px; height: 60px; background: white; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center; color: black; font-size: 30px;
+            position: relative; bottom: 15px; border: 3px solid transparent;
+            background-image: linear-gradient(white, white), var(--rainbow); background-origin: border-box; background-clip: content-box, border-box;
+            box-shadow: 0 0 15px rgba(255,255,255,0.2);
         }
 
-        .web-btn { background: white; color: black; box-shadow: 0 4px 15px rgba(255,255,255,0.2); }
-        .apk-btn { background: var(--primary); color: white; box-shadow: 0 4px 15px rgba(255, 77, 109, 0.4); }
-
-        .btn-choice:active { transform: scale(0.95); }
-
-        /* --- RÉSEAU SOCIAL (FEED) --- */
-        #main-app { display: none; width: 100%; height: 100%; }
-
-        .video-feed { width: 100%; height: 100%; overflow-y: scroll; scroll-snap-type: y mandatory; scroll-behavior: smooth; -webkit-overflow-scrolling: touch; }
-        .video-slide { position: relative; width: 100%; height: 100dvh; scroll-snap-align: start; scroll-snap-stop: always; background: #000; }
-        .video-player { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; z-index: 1; }
-        .overlay { position: absolute; bottom: 0; left: 0; width: 100%; height: 60%; background: linear-gradient(to top, rgba(0,0,0,0.8), transparent); z-index: 2; pointer-events: none; }
-
-        .header { position: fixed; top: calc(15px + var(--safe-top)); width: 100%; text-align: center; z-index: 100; pointer-events: none; }
-        .logo-small { font-size: 24px; font-weight: 800; letter-spacing: 2px; text-shadow: 0 2px 10px rgba(0,0,0,0.5); pointer-events: auto; }
-        .logo-small span:first-child { color: var(--secondary); }
-        .logo-small span:last-child { color: var(--primary); }
-
-        .side-bar { position: absolute; right: 12px; bottom: calc(100px + var(--safe-bottom)); display: flex; flex-direction: column; gap: 15px; align-items: center; z-index: 20; }
-        .icon-circle { width: 44px; height: 44px; border-radius: 50%; background: rgba(0,0,0,0.3); backdrop-filter: blur(5px); display: flex; align-items: center; justify-content: center; font-size: 22px; margin-bottom: 4px; border: 1px solid rgba(255,255,255,0.2); }
-        .avatar { width: 48px; height: 48px; border-radius: 50%; border: 2px solid white; object-fit: cover; }
-
-        .bottom-info { position: absolute; left: 15px; bottom: calc(85px + var(--safe-bottom)); max-width: 80%; z-index: 20; pointer-events: none; }
-        .username { font-weight: bold; font-size: 16px; margin-bottom: 4px; pointer-events: auto; }
-        .description { font-size: 14px; line-height: 1.3; pointer-events: auto; }
-
-        .nav-bar { position: fixed; bottom: 0; width: 100%; height: calc(65px + var(--safe-bottom)); background: rgba(0,0,0,0.9); backdrop-filter: blur(15px); color: #fff; display: flex; justify-content: space-around; align-items: center; padding-bottom: var(--safe-bottom); border-top: 0.5px solid rgba(255,255,255,0.1); z-index: 100; }
-        .nav-item { display: flex; flex-direction: column; align-items: center; font-size: 10px; opacity: 0.6; }
-        .nav-active { opacity: 1; }
-
-        .video-feed::-webkit-scrollbar { display: none; }
+        .hidden { display: none !important; }
+        .glow { position: absolute; width: 300px; height: 300px; background: radial-gradient(circle, rgba(157,0,255,0.2), transparent 70%); filter: blur(50px); pointer-events: none; }
     </style>
 </head>
 <body>
 
-    <!-- ÉCRAN DE CHOIX -->
+    <!-- LANDING -->
     <div id="landing-page">
-        <div class="landing-logo"><span>UCA</span><span>NSI</span></div>
-        <div class="choice-container">
-            <button class="btn-choice web-btn" onclick="startApp()">
-                <i class="fas fa-globe"></i> Continuer sur le Web
-            </button>
-            <a href="app-debug.apk" download class="btn-choice apk-btn">
-                <i class="fab fa-android"></i> Télécharger l'App APK
-            </a>
-        </div>
-        <p style="margin-top: 30px; font-size: 12px; color: #666;">Version 1.0 - Le futur du social</p>
+        <div class="landing-logo">UCANSI</div>
+        <button class="choice-btn web-btn" onclick="showLogin()">
+            <i class="fas fa-globe"></i> Continuer sur le Web
+        </button>
+        <a href="app-debug.apk" download class="choice-btn apk-btn">
+            <i class="fab fa-android"></i> Télécharger l'APK
+        </a>
     </div>
 
-    <!-- APPLICATION RÉELLE -->
+    <!-- LOGIN -->
+    <div id="login-screen" class="hidden">
+        <div class="glow"></div>
+        <div class="login-card">
+            <div class="landing-logo">UCANSI</div>
+            <input type="email" placeholder="Email">
+            <input type="password" placeholder="Mot de passe">
+            <button class="login-btn" onclick="startApp()">Se connecter</button>
+            <div style="margin: 15px 0; color: #555;">OU</div>
+            <button class="google-btn" onclick="startApp()">
+                <i class="fab fa-google"></i> Continuer avec Google
+            </button>
+        </div>
+    </div>
+
+    <!-- MAIN APP -->
     <div id="main-app">
-        <div class="header">
-            <div class="logo-small" onclick="window.location.reload()"><span>UCA</span><span>NSI</span></div>
+        <div class="top-bar">
+            <i class="fas fa-arrow-left"></i>
+            <span style="font-weight: bold;">Eledji com.</span>
+            <div style="background: red; padding: 2px 8px; border-radius: 4px; font-size: 12px; font-weight: bold;">Live</div>
         </div>
 
-        <div class="video-feed">
-            <!-- REEL 1 -->
-            <div class="video-slide">
-                <video class="video-player" loop playsinline muted>
-                    <source src="https://assets.mixkit.co/videos/preview/mixkit-girl-in-neon-lighting-in-the-night-city-2189-large.mp4" type="video/mp4">
-                </video>
-                <div class="overlay"></div>
-                <div class="side-bar">
-                    <img class="avatar" src="https://randomuser.me/api/portraits/women/44.jpg" alt="p1">
-                    <div class="icon-circle"><i class="fas fa-heart"></i></div>
-                    <div class="icon-circle"><i class="fas fa-comment"></i></div>
-                    <div class="icon-circle"><i class="fas fa-share"></i></div>
+        <div class="reels-container" id="reels">
+            <div class="reel">
+                <video loop playsinline muted src="https://assets.mixkit.co/videos/preview/mixkit-girl-in-neon-lighting-in-the-night-city-2189-large.mp4"></video>
+                <div class="sidebar">
+                    <div class="money-btn">$</div>
+                    <div class="icon-wrap"><div class="icon-in"><i class="fas fa-heart rainbow-icon"></i></div></div>
+                    <div class="icon-wrap"><div class="icon-in"><i class="fas fa-comment rainbow-icon"></i></div></div>
+                    <div class="icon-wrap"><div class="icon-in"><i class="fas fa-share rainbow-icon"></i></div></div>
                 </div>
-                <div class="bottom-info">
-                    <div class="username">@Sarah_Neon</div>
-                    <div class="description">Bienvenue sur Ucansi ! ✨ #NewEra</div>
-                </div>
-            </div>
-
-            <!-- REEL 2 -->
-            <div class="video-slide">
-                <video class="video-player" loop playsinline muted>
-                    <source src="https://assets.mixkit.co/videos/preview/mixkit-winter-fashion-shoot-in-a-snowy-forest-34448-large.mp4" type="video/mp4">
-                </video>
-                <div class="overlay"></div>
-                <div class="side-bar">
-                    <img class="avatar" src="https://randomuser.me/api/portraits/men/32.jpg" alt="p2">
-                    <div class="icon-circle"><i class="fas fa-heart"></i></div>
-                    <div class="icon-circle"><i class="fas fa-comment"></i></div>
-                    <div class="icon-circle"><i class="fas fa-share"></i></div>
-                </div>
-                <div class="bottom-info">
-                    <div class="username">@Forest_Model</div>
-                    <div class="description">Testez le swipe vers le haut ! ❄️</div>
+                <div style="position: absolute; bottom: 120px; left: 20px;">
+                    <div style="font-weight: bold; font-size: 18px;">@Sarah_Neon</div>
+                    <div style="font-size: 14px;">Vivez en couleurs ! 🌈 #Rainbow</div>
                 </div>
             </div>
         </div>
 
-        <nav class="nav-bar">
-            <div class="nav-item nav-active"><i class="fas fa-home"></i>Home</div>
-            <div class="nav-item"><i class="fas fa-search"></i>Explore</div>
-            <div class="nav-item" style="font-size: 26px;"><i class="fas fa-plus-square"></i></div>
-            <div class="nav-item"><i class="fas fa-comment-alt"></i>Chat</div>
-            <div class="nav-item"><i class="fas fa-user"></i>Profile</div>
+        <nav class="bottom-nav">
+            <div style="color: white; opacity: 1;">Accueil</div>
+            <div style="opacity: 0.6;">Découvrir</div>
+            <div class="plus-btn"><i class="fas fa-plus"></i></div>
+            <div style="opacity: 0.6;">Messages</div>
+            <div style="opacity: 0.6;">Compte</div>
         </nav>
     </div>
 
     <script>
-        // Fonction pour entrer dans l'application
-        function startApp() {
-            document.getElementById('landing-page').style.opacity = '0';
-            setTimeout(() => {
-                document.getElementById('landing-page').style.display = 'none';
-                document.getElementById('main-app').style.display = 'block';
-                // Lancer la première vidéo
-                const firstVideo = document.querySelector('video');
-                if (firstVideo) firstVideo.play();
-            }, 500);
+        function showLogin() {
+            document.getElementById('landing-page').classList.add('hidden');
+            document.getElementById('login-screen').classList.remove('hidden');
         }
 
-        // Play/Pause au scroll
+        function startApp() {
+            document.getElementById('login-screen').classList.add('hidden');
+            document.getElementById('main-app').style.display = 'block';
+            document.querySelector('video').play();
+        }
+
+        // Observer pour Play/Pause
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 const video = entry.target.querySelector('video');
-                if (entry.isIntersecting) {
-                    if (document.getElementById('main-app').style.display === 'block') {
-                        video.play();
-                    }
+                if (entry.isIntersecting && document.getElementById('main-app').style.display === 'block') {
+                    video.play();
                 } else {
                     video.pause();
-                    video.currentTime = 0;
                 }
             });
-        }, { threshold: 0.6 });
+        }, { threshold: 0.8 });
 
-        document.querySelectorAll('.video-slide').forEach(slide => observer.observe(slide));
+        document.querySelectorAll('.reel').forEach(reel => observer.observe(reel));
 
-        // Activer le son
         document.body.addEventListener('click', () => {
             document.querySelectorAll('video').forEach(v => v.muted = false);
         }, { once: true });
-
-        // Enregistrement Service Worker
-        if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('sw.js');
-        }
     </script>
 </body>
 </html>
