@@ -3,86 +3,142 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Ucansi - Connexion</title>
+    <title>Ucansi - Social Rainbow</title>
+    <link rel="manifest" href="manifest.json">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         :root {
             --rainbow: conic-gradient(#FF007F, #9D00FF, #007BFF, #00FBFF, #00FF88, #FFFF00, #FF8800, #FF007F);
             --pink: #FF007F;
             --purple: #9D00FF;
+            --cyan: #00FBFF;
+            --green: #2ECC71;
         }
 
-        body { margin: 0; background: #000; color: white; font-family: sans-serif; height: 100vh; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: sans-serif; }
+        body { background: #000; color: white; overflow: hidden; height: 100vh; width: 100vw; }
 
-        .login-container { width: 85%; max-width: 400px; text-align: center; z-index: 10; }
-
-        .logo {
-            font-size: 48px; font-weight: 900; letter-spacing: 4px; margin-bottom: 30px;
+        #login-screen {
+            position: fixed; inset: 0; background: #000; z-index: 1000;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+        }
+        .login-card { width: 85%; max-width: 400px; text-align: center; }
+        .landing-logo {
+            font-size: 50px; font-weight: 900; letter-spacing: 5px; margin-bottom: 40px;
             background: linear-gradient(to right, #FF007F, #007BFF, #FFFF00);
             -webkit-background-clip: text; -webkit-text-fill-color: transparent;
         }
-
         input {
             width: 100%; padding: 15px; margin-bottom: 15px; border-radius: 12px;
-            border: 1px solid #444; background: #111; color: white; outline: none;
+            border: 1px solid #333; background: #111; color: white; outline: none;
         }
-
         .login-btn {
             width: 100%; padding: 15px; border-radius: 30px; border: 2px solid transparent;
             background-image: linear-gradient(#000, #000), var(--rainbow);
             background-origin: border-box; background-clip: content-box, border-box;
-            color: white; font-size: 16px; font-weight: bold; cursor: pointer; margin-bottom: 20px;
+            color: white; font-size: 16px; font-weight: bold; cursor: pointer; margin-bottom: 15px;
         }
-
-        .separator { display: flex; align-items: center; color: #666; font-size: 12px; margin-bottom: 20px; }
-        .separator::before, .separator::after { content: ""; flex: 1; height: 1px; background: #333; margin: 0 10px; }
-
         .google-btn {
             width: 100%; padding: 15px; border-radius: 30px; border: none;
             background: white; color: black; font-size: 16px; font-weight: 600;
-            display: flex; align-items: center; justify-content: center; cursor: pointer;
-            gap: 10px;
+            display: flex; align-items: center; justify-content: center; gap: 10px; cursor: pointer;
         }
 
-        .glow { position: absolute; width: 300px; height: 300px; background: radial-gradient(circle, rgba(157,0,255,0.2) 0%, transparent 70%); filter: blur(50px); z-index: 1; }
+        #main-app { display: none; height: 100vh; position: relative; }
+        .reels-container { height: 100vh; overflow-y: scroll; scroll-snap-type: y mandatory; }
+        .reel { height: 100vh; scroll-snap-align: start; position: relative; }
+        video { width: 100%; height: 100%; object-fit: cover; }
+
+        .top-bar { position: absolute; top: 40px; width: 100%; display: flex; justify-content: space-between; padding: 0 20px; z-index: 10; }
+        .sidebar { position: absolute; right: 15px; bottom: 150px; display: flex; flex-direction: column; gap: 15px; align-items: center; z-index: 10; }
+        .icon-wrap { width: 54px; height: 54px; border-radius: 50%; background: var(--rainbow); padding: 3px; display: flex; align-items: center; justify-content: center; }
+        .icon-in { width: 100%; height: 100%; border-radius: 50%; background: black; display: flex; align-items: center; justify-content: center; font-size: 24px; }
+        .rainbow-icon { background: var(--rainbow); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .money-btn { width: 45px; height: 45px; background: var(--green); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 24px; font-weight: bold; }
+
+        .bottom-nav {
+            position: fixed; bottom: 0; width: 100%; height: 80px;
+            background: rgba(0,0,0,0.8); display: flex; justify-content: space-around; align-items: center; z-index: 20;
+        }
+        .plus-btn {
+            width: 60px; height: 60px; background: white; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center; color: black; font-size: 30px;
+            position: relative; bottom: 15px; border: 3px solid transparent;
+            background-image: linear-gradient(white, white), var(--rainbow); background-origin: border-box; background-clip: content-box, border-box;
+        }
 
         .hidden { display: none !important; }
-        #feed-ui { width: 100vw; height: 100vh; position: relative; }
+        .glow { position: absolute; width: 300px; height: 300px; background: radial-gradient(circle, rgba(157,0,255,0.2), transparent 70%); filter: blur(50px); pointer-events: none; }
     </style>
 </head>
 <body>
 
-    <div class="glow"></div>
-
-    <div class="login-container" id="login-screen">
-        <div class="logo">UCANSI</div>
-        <input type="email" placeholder="Email">
-        <input type="password" placeholder="Mot de passe">
-        <button class="login-btn" onclick="login()">Se connecter</button>
-
-        <div class="separator">OU</div>
-
-        <button class="google-btn" onclick="login()">
-            <i class="fab fa-google"></i> Continuer avec Google
-        </button>
-
-        <p style="margin-top: 20px; color: #888; font-size: 14px;">Créer un compte</p>
-    </div>
-
-    <!-- Le reste de l'UI feed... -->
-    <div id="feed-ui" class="hidden">
-        <!-- (UI de feed simplifiée pour la démo) -->
-        <div style="width: 100%; height: 100%; background: #000; display: flex; align-items: center; justify-content: center;">
-            <h2 class="logo" style="font-size: 24px;">Connecté ! 🚀</h2>
+    <div id="login-screen">
+        <div class="glow"></div>
+        <div class="login-card">
+            <div class="landing-logo">UCANSI</div>
+            <input type="email" id="email" placeholder="Email">
+            <input type="password" id="password" placeholder="Mot de passe">
+            <button class="login-btn" onclick="mockLogin()">Se connecter</button>
+            <div style="margin: 15px 0; color: #555;">OU</div>
+            <button class="google-btn" onclick="mockLogin()">
+                <i class="fab fa-google"></i> Continuer avec Google
+            </button>
         </div>
     </div>
 
+    <div id="main-app">
+        <div class="top-bar">
+            <i class="fas fa-arrow-left"></i>
+            <span style="font-weight: bold;">Eledji com.</span>
+            <div style="background: red; padding: 2px 8px; border-radius: 4px; font-size: 12px; font-weight: bold;">Live</div>
+        </div>
+        <div class="reels-container" id="reels">
+            <div class="reel">
+                <video loop playsinline muted src="https://assets.mixkit.co/videos/preview/mixkit-girl-in-neon-lighting-in-the-night-city-2189-large.mp4"></video>
+                <div class="sidebar">
+                    <div class="money-btn">$</div>
+                    <div class="icon-wrap"><div class="icon-in"><i class="fas fa-heart rainbow-icon"></i></div></div>
+                    <div class="icon-wrap"><div class="icon-in"><i class="fas fa-comment rainbow-icon"></i></div></div>
+                    <div class="icon-wrap"><div class="icon-in"><i class="fas fa-share rainbow-icon"></i></div></div>
+                </div>
+                <div style="position: absolute; bottom: 120px; left: 20px;">
+                    <div style="font-weight: bold; font-size: 18px;">@Sarah_Neon</div>
+                    <div style="font-size: 14px;">Vivez en couleurs ! 🌈 #Rainbow</div>
+                </div>
+            </div>
+        </div>
+        <nav class="bottom-nav">
+            <div>Accueil</div>
+            <div>Découvrir</div>
+            <div class="plus-btn"><i class="fas fa-plus"></i></div>
+            <div>Messages</div>
+            <div>Compte</div>
+        </nav>
+    </div>
+
     <script>
-        function login() {
+        function mockLogin() {
             document.getElementById('login-screen').classList.add('hidden');
-            document.getElementById('feed-ui').classList.remove('hidden');
-            // Redirection vers le flux réel ici si nécessaire
+            document.getElementById('main-app').style.display = 'block';
+            document.querySelector('video').play();
         }
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                const video = entry.target.querySelector('video');
+                if (entry.isIntersecting && document.getElementById('main-app').style.display === 'block') {
+                    video.play();
+                } else {
+                    video.pause();
+                }
+            });
+        }, { threshold: 0.8 });
+
+        document.querySelectorAll('.reel').forEach(reel => observer.observe(reel));
+        document.body.addEventListener('click', () => {
+            document.querySelectorAll('video').forEach(v => v.muted = false);
+        }, { once: true });
     </script>
 </body>
 </html>
