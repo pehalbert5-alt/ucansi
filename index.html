@@ -188,10 +188,14 @@
 
     <div class="header">
         <div class="logo"><span>UCA</span><span>NSI</span></div>
-        <!-- Bouton de téléchargement discret en haut à droite -->
-        <div id="installBtn" style="position: absolute; right: 15px; top: 5px; background: #FF4D6D; color: white; padding: 5px 10px; border-radius: 20px; font-size: 12px; font-weight: bold; display: none;">
-            TÉLÉCHARGER
+        <!-- Bouton pour installer l'application (PWA) -->
+        <div id="installBtn" style="position: absolute; right: 80px; top: 5px; background: #FF4D6D; color: white; padding: 5px 10px; border-radius: 20px; font-size: 10px; font-weight: bold; display: none; cursor: pointer;">
+            INSTALLER
         </div>
+        <!-- Bouton pour télécharger le fichier APK directement -->
+        <a id="apkDownloadBtn" href="app-debug.apk" download style="position: absolute; right: 10px; top: 5px; background: #2E5BFF; color: white; padding: 5px 10px; border-radius: 20px; font-size: 10px; font-weight: bold; text-decoration: none;">
+            APK
+        </a>
     </div>
 
     <div class="video-feed" id="feed">
