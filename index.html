@@ -188,6 +188,10 @@
 
     <div class="header">
         <div class="logo"><span>UCA</span><span>NSI</span></div>
+        <!-- Bouton de téléchargement discret en haut à droite -->
+        <div id="installBtn" style="position: absolute; right: 15px; top: 5px; background: #FF4D6D; color: white; padding: 5px 10px; border-radius: 20px; font-size: 12px; font-weight: bold; display: none;">
+            TÉLÉCHARGER
+        </div>
     </div>
 
     <div class="video-feed" id="feed">
@@ -277,6 +281,30 @@
     </nav>
 
     <script>
+        // Gestion du bouton de téléchargement (Installation PWA)
+        let deferredPrompt;
+        const installBtn = document.getElementById('installBtn');
+
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            installBtn.style.display = 'block'; // Affiche le bouton si l'app peut être installée
+        });
+
+        installBtn.addEventListener('click', () => {
+            if (deferredPrompt) {
+                deferredPrompt.prompt();
+                deferredPrompt.userChoice.then((choiceResult) => {
+                    if (choiceResult.outcome === 'accepted') {
+                        installBtn.style.display = 'none';
+                    }
+                    deferredPrompt = null;
+                });
+            }
+        });
+
+        // Enregistrement du Service Worker
+
         // Intersection Observer pour Play/Pause
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
