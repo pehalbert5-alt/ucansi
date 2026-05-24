@@ -1,23 +1,21 @@
 package com.example.ucansi
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.Comment
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.*
-import androidx.compose.material.icons.outlined.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.drawWithCache
-import androidx.compose.ui.graphics.BlendMode
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -25,158 +23,103 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.ucansi.ui.theme.UcansiTheme
 
-// Couleurs ultra-vives
-val UcansiPink = Color(0xFFFF007F)
-val UcansiPurple = Color(0xFF9D00FF)
-val UcansiBlue = Color(0xFF007BFF)
-val UcansiCyan = Color(0xFF00FBFF)
-val UcansiGreen = Color(0xFF00FF88)
-val UcansiYellow = Color(0xFFFFFF00)
-val UcansiOrange = Color(0xFFFF8800)
-
+// Colors
 val RainbowColors = listOf(
-    UcansiPink, UcansiPurple, UcansiBlue, UcansiCyan, UcansiGreen, UcansiYellow, UcansiOrange, UcansiPink
+    Color(0xFFFF007F), Color(0xFF9D00FF), Color(0xFF007BFF), 
+    Color(0xFF00FBFF), Color(0xFF00FF88), Color(0xFFFFFF00), Color(0xFFFF8800)
 )
-
-val FullRainbowBrush = Brush.sweepGradient(colors = RainbowColors)
+val RainbowBrush = Brush.sweepGradient(RainbowColors)
+val GreenMoney = Color(0xFF2ECC71)
 
 @Composable
 fun MainScreen() {
-    Scaffold(
-        bottomBar = { UcansiBottomNavigation() },
-        containerColor = Color.Black,
-    ) { innerPadding ->
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(bottom = innerPadding.calculateBottomPadding())
+    Box(modifier = Modifier.fillMaxSize().background(Color.Black)) {
+        // --- TOP BAR ---
+        Row(
+            modifier = Modifier.fillMaxWidth().padding(top = 40.dp, start = 16.dp, end = 16.dp),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
         ) {
-            // Fond sombre pour faire ressortir les couleurs
-            Box(modifier = Modifier.fillMaxSize().background(Color(0xFF050505)))
-
-            // Logo Top Arc-en-ciel
-            Text(
-                text = "UCANSI",
-                modifier = Modifier
-                    .align(Alignment.TopCenter)
-                    .padding(top = 48.dp),
-                style = MaterialTheme.typography.headlineMedium.copy(
-                    fontWeight = FontWeight.Black,
-                    brush = Brush.linearGradient(RainbowColors),
-                    letterSpacing = 4.sp
-                )
-            )
-
-            // Boutons Droite
-            Column(
-                modifier = Modifier
-                    .align(Alignment.BottomEnd)
-                    .padding(bottom = 24.dp, end = 12.dp),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.spacedBy(20.dp)
-            ) {
-                ProfileWithPlus()
-                RainbowActionIcon(Icons.Default.Favorite, "1.2M")
-                RainbowActionIcon(Icons.AutoMirrored.Filled.Comment, "12.5K")
-                RainbowActionIcon(Icons.Default.Share, "102")
-            }
-
-            // Info Bas
-            Column(
-                modifier = Modifier
-                    .align(Alignment.BottomStart)
-                    .padding(start = 16.dp, bottom = 24.dp, end = 80.dp)
-            ) {
-                Text("@Sarah_Neon", color = Color.White, fontWeight = FontWeight.Bold, fontSize = 18.sp)
-                Text("Vivez en couleurs ! 🌈 #Rainbow #Ucansi", color = Color.White.copy(0.9f))
+            Icon(Icons.AutoMirrored.Filled.ArrowBack, null, tint = Color.White)
+            Text("Eledji com.", color = Color.White, fontWeight = FontWeight.Bold, fontSize = 18.sp)
+            Surface(color = Color.Red, shape = RoundedCornerShape(4.dp)) {
+                Text("Live", color = Color.White, modifier = Modifier.padding(horizontal = 8.dp, vertical = 2.dp), fontSize = 12.sp)
             }
         }
-    }
-}
 
-@Composable
-fun RainbowActionIcon(icon: ImageVector, count: String) {
-    Column(horizontalAlignment = Alignment.CenterHorizontally) {
-        Box(
-            modifier = Modifier
-                .size(54.dp)
-                .background(FullRainbowBrush, CircleShape)
-                .padding(3.dp)
-                .background(Color.Black, CircleShape),
-            contentAlignment = Alignment.Center
+        // --- RIGHT SIDEBAR ---
+        Column(
+            modifier = Modifier.align(Alignment.CenterEnd).padding(end = 12.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(15.dp)
         ) {
-            // L'icône elle-même est en dégradé !
-            Icon(
-                imageVector = icon,
-                contentDescription = null,
-                modifier = Modifier
-                    .size(30.dp)
-                    .graphicsLayer(alpha = 0.99f)
-                    .drawWithCache {
-                        onDrawWithContent {
-                            drawContent()
-                            drawRect(FullRainbowBrush, blendMode = BlendMode.SrcAtop)
-                        }
-                    },
-                tint = Color.Unspecified // Important pour le dégradé
-            )
+            MoneyIcon()
+            MoneyIcon()
+            Icon(Icons.Default.FavoriteBorder, null, tint = Color.White, modifier = Modifier.size(30.dp))
+            Icon(Icons.Default.ChatBubbleOutline, null, tint = Color.White, modifier = Modifier.size(30.dp))
+            Icon(Icons.Default.Share, null, tint = Color.White, modifier = Modifier.size(30.dp))
+            SocialIcon(Color(0xFF25D366), Icons.Default.Call) // WhatsApp dummy
+            SocialIcon(Color(0xFFE1306C), Icons.Default.CameraAlt) // Insta dummy
         }
-        Text(count, color = Color.White, fontSize = 12.sp, fontWeight = FontWeight.Bold)
-    }
-}
 
-@Composable
-fun ProfileWithPlus() {
-    Box(modifier = Modifier.size(60.dp), contentAlignment = Alignment.Center) {
-        Box(
-            modifier = Modifier
-                .size(52.dp)
-                .background(FullRainbowBrush, CircleShape)
-                .padding(2.dp)
-                .background(Color.DarkGray, CircleShape)
-        )
-        Box(
-            modifier = Modifier
-                .size(24.dp)
-                .align(Alignment.BottomCenter)
-                .offset(y = 4.dp)
-                .background(UcansiPink, CircleShape)
-                .padding(2.dp),
-            contentAlignment = Alignment.Center
+        // --- FLOATING COMMENTS ---
+        Column(
+            modifier = Modifier.align(Alignment.BottomStart).padding(start = 16.dp, bottom = 100.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            Icon(Icons.Default.Add, null, tint = Color.White, modifier = Modifier.size(16.dp))
+            CommentBubble("Wow! ❤️🔥")
+            CommentBubble("Dere! ❤️🥰")
+            Text("So cool.", color = Color.White, fontSize = 14.sp, modifier = Modifier.padding(start = 8.dp))
         }
-    }
-}
 
-@Composable
-fun UcansiBottomNavigation() {
-    NavigationBar(containerColor = Color.Black, tonalElevation = 0.dp) {
-        NavigationBarItem(
-            icon = { 
-                Box(modifier = Modifier.size(38.dp).background(FullRainbowBrush, RoundedCornerShape(10.dp)), contentAlignment = Alignment.Center) {
-                    Icon(Icons.Default.PlayArrow, null, tint = Color.White)
+        // --- BOTTOM NAV & PLUS BUTTON ---
+        Box(modifier = Modifier.align(Alignment.BottomCenter).fillMaxWidth().height(80.dp).background(Color.Black.copy(0.5f))) {
+            Row(
+                modifier = Modifier.fillMaxSize().padding(horizontal = 20.dp),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text("Accueil", color = Color.White, fontSize = 12.sp)
+                Text("Découvrir", color = Color.White.copy(0.6f), fontSize = 12.sp)
+                Spacer(Modifier.width(60.dp)) // Space for center button
+                Text("Messages", color = Color.White.copy(0.6f), fontSize = 12.sp)
+                Text("Compte", color = Color.White.copy(0.6f), fontSize = 12.sp)
+            }
+
+            // The Glowing Plus Button
+            Box(contentAlignment = Alignment.Center, modifier = Modifier.align(Alignment.Center).offset(y = (-10).dp)) {
+                // Glow effect
+                Box(modifier = Modifier.size(65.dp).blur(10.dp).background(RainbowBrush, CircleShape))
+                // Button
+                Box(
+                    modifier = Modifier.size(55.dp).border(3.dp, RainbowBrush, CircleShape).background(Color.White, CircleShape),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Icon(Icons.Default.Add, null, tint = Color.Black, modifier = Modifier.size(35.dp))
                 }
-            },
-            label = { Text("Feed", color = Color.White) },
-            selected = true,
-            onClick = {}
-        )
-        NavigationBarItem(
-            icon = { Icon(Icons.Default.FavoriteBorder, null, tint = UcansiPink) },
-            label = { Text("Likes", color = Color.White) },
-            selected = false, onClick = {}
-        )
-        NavigationBarItem(
-            icon = { Icon(Icons.Default.ChatBubbleOutline, null, tint = UcansiPurple) },
-            label = { Text("Chat", color = Color.White) },
-            selected = false, onClick = {}
-        )
-        NavigationBarItem(
-            icon = { Icon(Icons.Default.PersonOutline, null, tint = UcansiCyan) },
-            label = { Text("Profil", color = Color.White) },
-            selected = false, onClick = {}
-        )
+            }
+        }
+    }
+}
+
+@Composable
+fun MoneyIcon() {
+    Box(modifier = Modifier.size(45.dp).background(GreenMoney, CircleShape), contentAlignment = Alignment.Center) {
+        Text("$", color = Color.White, fontWeight = FontWeight.Bold, fontSize = 24.sp)
+    }
+}
+
+@Composable
+fun SocialIcon(color: Color, icon: ImageVector) {
+    Box(modifier = Modifier.size(40.dp).background(color, CircleShape), contentAlignment = Alignment.Center) {
+        Icon(icon, null, tint = Color.White, modifier = Modifier.size(22.dp))
+    }
+}
+
+@Composable
+fun CommentBubble(text: String) {
+    Surface(color = Color.Black.copy(0.4f), shape = RoundedCornerShape(12.dp)) {
+        Text(text, color = Color.Yellow, modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp), fontSize = 13.sp)
     }
 }
 
